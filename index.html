@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- =====================================================
+         BASIC PAGE SETTINGS
+    ===================================================== -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gamesi</title>
+
+
+    <!-- =====================================================
+         BROWSER TAB LOGO / FAVICON
+
+         Put logo.png in the same folder as this file.
+    ===================================================== -->
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+    <link
+        rel="shortcut icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+
+            margin: 0;
+
+            padding: 0;
+        }
+
+
+        /* =====================================================
+           HTML
+        ===================================================== */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        /* =====================================================
+           BODY
+        ===================================================== */
+
+        body {
+            min-height: 100vh;
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                #090c18;
+
+            color:
+                white;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            width: 100%;
+
+            height: 82px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                rgba(
+                    13,
+                    16,
+                    32,
+                    0.92
+                );
+
+            border-bottom:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.08
+                );
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            backdrop-filter:
+                blur(15px);
+
+            -webkit-backdrop-filter:
+                blur(15px);
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        nav {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 45px;
+        }
+
+
+        nav a {
+            position: relative;
+
+            color:
+                #c6cbe3;
+
+            text-decoration: none;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            padding:
+                8px 3px;
+
+            transition:
+                color 0.2s ease;
+        }
+
+
+        nav a:hover {
+            color:
+                #ffffff;
+        }
+
+
+        /* Navigation underline */
+
+        nav a::after {
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            bottom: 0;
+
+            width: 0;
+
+            height: 2px;
+
+            background:
+                #8174ff;
+
+            transform:
+                translateX(-50%);
+
+            transition:
+                width 0.2s ease;
+        }
+
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            min-height:
+                570px;
+
+            width: 100%;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 75% 40%,
+                    #30266b 0%,
+                    #191c3d 27%,
+                    #0d1124 60%,
+                    #090c18 100%
+                );
+        }
+
+
+        /* =====================================================
+           HERO LIGHT EFFECT
+        ===================================================== */
+
+        .hero::before {
+            content: "";
+
+            position: absolute;
+
+            width: 600px;
+
+            height: 600px;
+
+            right: -180px;
+
+            top: -200px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.16
+                );
+
+            filter:
+                blur(90px);
+
+            pointer-events:
+                none;
+        }
+
+
+        .hero::after {
+            content: "";
+
+            position: absolute;
+
+            width: 450px;
+
+            height: 450px;
+
+            left: -250px;
+
+            bottom: -250px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(
+                    50,
+                    120,
+                    255,
+                    0.08
+                );
+
+            filter:
+                blur(80px);
+
+            pointer-events:
+                none;
+        }
+
+
+        /* =====================================================
+           HERO CONTENT WRAPPER
+        ===================================================== */
+
+        .hero-inner {
+            width: 100%;
+
+            max-width:
+                1500px;
+
+            min-height:
+                570px;
+
+            margin:
+                0 auto;
+
+            padding:
+                65px 7%;
+
+            display: grid;
+
+            grid-template-columns:
+                0.85fr
+                1.15fr;
+
+            align-items:
+                center;
+
+            gap:
+                35px;
+
+            position:
+                relative;
+
+            z-index:
+                2;
+        }
+
+
+        /* =====================================================
+           HERO TEXT
+        ===================================================== */
+
+        .hero-content {
+            position:
+                relative;
+
+            z-index:
+                5;
+        }
+
+
+        /* =====================================================
+           HERO SMALL LABEL
+        ===================================================== */
+
+        .hero-tag {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                7px;
+
+            padding:
+                8px 14px;
+
+            border-radius:
+                50px;
+
+            background:
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.12
+                );
+
+            border:
+                1px solid
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.35
+                );
+
+            color:
+                #aaa3ff;
+
+            font-size:
+                12px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                0.6px;
+
+            margin-bottom:
+                22px;
+        }
+
+
+        /* =====================================================
+           HERO TITLE
+        ===================================================== */
+
+        .hero h1 {
+            font-size:
+                clamp(
+                    50px,
+                    6vw,
+                    82px
+                );
+
+            line-height:
+                0.93;
+
+            letter-spacing:
+                -4px;
+
+            margin-bottom:
+                25px;
+        }
+
+
+        .hero h1 span {
+            color:
+                #8376ff;
+        }
+
+
+        /* =====================================================
+           HERO DESCRIPTION
+        ===================================================== */
+
+        .hero p {
+            max-width:
+                520px;
+
+            color:
+                #adb5d3;
+
+            font-size:
+                18px;
+
+            line-height:
+                1.65;
+
+            margin-bottom:
+                30px;
+        }
+
+
+        /* =====================================================
+           HERO BUTTON
+        ===================================================== */
+
+        .hero-button {
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                10px;
+
+            padding:
+                14px 22px;
+
+            border-radius:
+                13px;
+
+            background:
+                #7567ff;
+
+            color:
+                white;
+
+            text-decoration:
+                none;
+
+            font-size:
+                15px;
+
+            font-weight:
+                700;
+
+            box-shadow:
+                0 12px 30px
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.2
+                );
+
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .hero-button:hover {
+            background:
+                #897dff;
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 16px 38px
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.32
+                );
+        }
+
+
+        /* =====================================================
+           HERO IMAGE CONTAINER
+        ===================================================== */
+
+        .hero-visual {
+            height:
+                440px;
+
+            min-width:
+                0;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            position:
+                relative;
+        }
+
+
+        /* =====================================================
+           IMAGE GLOW
+        ===================================================== */
+
+        .hero-visual::before {
+            content: "";
+
+            position:
+                absolute;
+
+            width:
+                500px;
+
+            height:
+                320px;
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.2
+                );
+
+            filter:
+                blur(75px);
+
+            z-index:
+                0;
+        }
+
+
+        /* =====================================================
+           YOUR PNG
+        ===================================================== */
+
+        .hero-visual img {
+            position:
+                relative;
+
+            z-index:
+                2;
+
+            width:
+                100%;
+
+            max-width:
+                760px;
+
+            max-height:
+                440px;
+
+            object-fit:
+                contain;
+
+            display:
+                block;
+
+            filter:
+                drop-shadow(
+                    0 25px 45px
+                    rgba(
+                        0,
+                        0,
+                        0,
+                        0.45
+                    )
+                );
+
+            transition:
+                transform 0.4s ease;
+        }
+
+
+        .hero-visual img:hover {
+            transform:
+                scale(1.025);
+        }
+
+
+        /* =====================================================
+           GAMES SECTION
+        ===================================================== */
+
+        .games {
+            width: 100%;
+
+            max-width:
+                1500px;
+
+            margin:
+                0 auto;
+
+            padding:
+                75px 7% 100px;
+        }
+
+
+        /* =====================================================
+           SECTION HEADER
+        ===================================================== */
+
+        .section-header {
+            display:
+                flex;
+
+            align-items:
+                flex-end;
+
+            justify-content:
+                space-between;
+
+            margin-bottom:
+                30px;
+        }
+
+
+        .section-header h2 {
+            font-size:
+                35px;
+
+            letter-spacing:
+                -1px;
+        }
+
+
+        .section-header p {
+            color:
+                #6e7696;
+
+            font-size:
+                14px;
+        }
+
+
+        /* =====================================================
+           GAME GRID
+        ===================================================== */
+
+        .grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    2,
+                    minmax(
+                        0,
+                        1fr
+                    )
+                );
+
+            gap:
+                24px;
+        }
+
+
+        /* =====================================================
+           GAME CARD
+        ===================================================== */
+
+        .card {
+            min-height:
+                300px;
+
+            padding:
+                30px;
+
+            position:
+                relative;
+
+            overflow:
+                hidden;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #191e38,
+                    #12162a
+                );
+
+            border:
+                1px solid
+                #292e4c;
+
+            border-radius:
+                22px;
+
+            transition:
+                transform 0.25s ease,
+                border-color 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+
+        /* =====================================================
+           CARD BACKGROUND GLOW
+        ===================================================== */
+
+        .card::before {
+            content: "";
+
+            position:
+                absolute;
+
+            width:
+                220px;
+
+            height:
+                220px;
+
+            right:
+                -120px;
+
+            top:
+                -120px;
+
+            border-radius:
+                50%;
+
+            background:
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.12
+                );
+
+            filter:
+                blur(35px);
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .card:hover::before {
+            transform:
+                scale(1.5);
+        }
+
+
+        /* =====================================================
+           CARD HOVER
+        ===================================================== */
+
+        .card:hover {
+            transform:
+                translateY(-7px);
+
+            border-color:
+                #6257c9;
+
+            box-shadow:
+                0 20px 50px
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.28
+                );
+        }
+
+
+        /* =====================================================
+           GAME ICON
+        ===================================================== */
+
+        .emoji {
+            width:
+                70px;
+
+            height:
+                70px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            background:
+                #222743;
+
+            border:
+                1px solid
+                rgba(
+                    255,
+                    255,
+                    255,
+                    0.05
+                );
+
+            border-radius:
+                17px;
+
+            font-size:
+                40px;
+
+            margin-bottom:
+                22px;
+
+            position:
+                relative;
+
+            z-index:
+                2;
+        }
+
+
+        /* =====================================================
+           CARD TITLE
+        ===================================================== */
+
+        .card h3 {
+            font-size:
+                24px;
+
+            margin-bottom:
+                10px;
+
+            position:
+                relative;
+
+            z-index:
+                2;
+        }
+
+
+        /* =====================================================
+           CARD DESCRIPTION
+        ===================================================== */
+
+        .card p {
+            color:
+                #9da5c4;
+
+            font-size:
+                15px;
+
+            line-height:
+                1.6;
+
+            margin-bottom:
+                25px;
+
+            max-width:
+                600px;
+
+            flex-grow:
+                1;
+
+            position:
+                relative;
+
+            z-index:
+                2;
+        }
+
+
+        /* =====================================================
+           PLAY BUTTON
+        ===================================================== */
+
+        .play-button {
+            border:
+                none;
+
+            border-radius:
+                11px;
+
+            padding:
+                12px 19px;
+
+            background:
+                #7567ff;
+
+            color:
+                white;
+
+            font-size:
+                14px;
+
+            font-weight:
+                700;
+
+            cursor:
+                pointer;
+
+            width:
+                fit-content;
+
+            position:
+                relative;
+
+            z-index:
+                3;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .play-button:hover {
+            background:
+                #897dff;
+
+            transform:
+                translateY(-2px);
+
+            box-shadow:
+                0 8px 22px
+                rgba(
+                    117,
+                    103,
+                    255,
+                    0.3
+                );
+        }
+
+
+        .play-button:active {
+            transform:
+                translateY(0);
+        }
+
+
+        /* =====================================================
+           ABOUT
+        ===================================================== */
+
+        .about {
+            width:
+                100%;
+
+            padding:
+                70px 7%;
+
+            background:
+                #0c101f;
+
+            border-top:
+                1px solid
+                #20253e;
+        }
+
+
+        .about-inner {
+            max-width:
+                900px;
+
+            margin:
+                0 auto;
+
+            text-align:
+                center;
+        }
+
+
+        .about h2 {
+            font-size:
+                32px;
+
+            margin-bottom:
+                16px;
+        }
+
+
+        .about p {
+            color:
+                #9098b7;
+
+            font-size:
+                16px;
+
+            line-height:
+                1.7;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            width:
+                100%;
+
+            padding:
+                27px;
+
+            text-align:
+                center;
+
+            background:
+                #090c18;
+
+            border-top:
+                1px solid
+                #20243c;
+
+            color:
+                #626b8a;
+
+            font-size:
+                14px;
+        }
+
+
+        /* =====================================================
+           TABLET
+        ===================================================== */
+
+        @media (max-width: 950px) {
+
+            .hero {
+                min-height:
+                    auto;
+            }
+
+
+            .hero-inner {
+                min-height:
+                    auto;
+
+                grid-template-columns:
+                    1fr;
+
+                text-align:
+                    center;
+
+                padding:
+                    60px 7%;
+            }
+
+
+            .hero-content {
+                display:
+                    flex;
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    center;
+
+                order:
+                    2;
+            }
+
+
+            .hero p {
+                margin-left:
+                    auto;
+
+                margin-right:
+                    auto;
+            }
+
+
+            .hero-visual {
+                order:
+                    1;
+
+                height:
+                    350px;
+            }
+
+
+            .hero-visual img {
+                max-height:
+                    350px;
+            }
+
+
+            .grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 600px) {
+
+            header {
+                height:
+                    70px;
+            }
+
+
+            nav {
+                gap:
+                    30px;
+            }
+
+
+            nav a {
+                font-size:
+                    15px;
+            }
+
+
+            .hero-inner {
+                padding:
+                    40px 6% 55px;
+            }
+
+
+            .hero-visual {
+                height:
+                    250px;
+            }
+
+
+            .hero-visual img {
+                max-height:
+                    250px;
+            }
+
+
+            .hero h1 {
+                font-size:
+                    48px;
+
+                letter-spacing:
+                    -3px;
+            }
+
+
+            .hero p {
+                font-size:
+                    16px;
+            }
+
+
+            .games {
+                padding:
+                    55px 6% 75px;
+            }
+
+
+            .section-header {
+                display:
+                    block;
+            }
+
+
+            .section-header h2 {
+                margin-bottom:
+                    8px;
+            }
+
+
+            .card {
+                min-height:
+                    280px;
+
+                padding:
+                    25px;
+            }
+
+
+            .about {
+                padding:
+                    55px 7%;
+            }
+
+        }
+
+
+        /* =====================================================
+           SMALL PHONES
+        ===================================================== */
+
+        @media (max-width: 380px) {
+
+            nav {
+                gap:
+                    22px;
+            }
+
+
+            .hero-visual {
+                height:
+                    210px;
+            }
+
+
+            .hero-visual img {
+                max-height:
+                    210px;
+            }
+
+
+            .hero h1 {
+                font-size:
+                    40px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+
+         Logo removed from the actual page header.
+         The logo is only used for the browser tab.
+    ===================================================== -->
+
+    <header>
+
+        <nav>
+
+            <a href="#games">
+                Games
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         HERO
+    ===================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-inner">
+
+
+            <!-- =================================================
+                 HERO TEXT
+            ================================================= -->
+
+            <div class="hero-content">
+
+                <div class="hero-tag">
+                    🎮 BROWSER GAMES
+                </div>
+
+
+                <h1>
+                    Play.<br>
+                    Chill.<br>
+                    <span>Repeat.</span>
+                </h1>
+
+
+                <p>
+                    Welcome to Gamesi — a place to
+                    play fun browser games.
+                    Pick a game and start playing!
+                </p>
+
+
+                <a
+                    href="#games"
+                    class="hero-button"
+                >
+                    Explore Games
+
+                    <span>
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HERO PNG
+
+                 Make sure the file is called:
+
+                 hero.png
+            ================================================= -->
+
+            <div class="hero-visual">
+
+                <img
+                    src="hero.png"
+                    alt="Gamesi gaming artwork"
+                >
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FEATURED GAMES
+    ===================================================== -->
+
+    <section
+        class="games"
+        id="games"
+    >
+
+
+        <!-- =================================================
+             SECTION HEADER
+        ================================================= -->
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Featured Games
+                </h2>
+
+            </div>
+
+
+            <p>
+                Choose your next game
+            </p>
+
+        </div>
+
+
+
+        <!-- =================================================
+             GAME CARDS
+        ================================================= -->
+
+        <div class="grid">
+
+
+            <!-- =================================================
+                 STREET DRIVE
+            ================================================= -->
+
+            <div class="card">
+
+                <div class="emoji">
+                    🚗
+                </div>
+
+
+                <h3>
+                    Street Drive
+                </h3>
+
+
+                <p>
+                    Drive through traffic in this
+                    fast-paced 2D top-down
+                    driving game.
+                </p>
+
+
+                <button
+                    class="play-button"
+                    onclick="
+                        window.location.href =
+                        'drive.html';
+                    "
+                >
+                    Play Now →
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 COUNTER ARENA
+            ================================================= -->
+
+            <div class="card">
+
+                <div class="emoji">
+                    🎯
+                </div>
+
+
+                <h3>
+                    Counter Arena
+                </h3>
+
+
+                <p>
+                    Battle training bots in a
+                    tactical round-based arena.
+                </p>
+
+
+                <button
+                    class="play-button"
+                    onclick="
+                        window.location.href =
+                        'counter_arena.html';
+                    "
+                >
+                    Play Now →
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ABOUT SECTION
+    ===================================================== -->
+
+    <section
+        class="about"
+        id="about"
+    >
+
+        <div class="about-inner">
+
+            <h2>
+                About Gamesi
+            </h2>
+
+
+            <p>
+                Gamesi is a simple place to play
+                fun browser games. Choose a game,
+                hit play, and have fun.
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer>
+
+        © 2026 Gamesi · Made for gaming fun
+
+    </footer>
+
+
+</body>
+
+</html>
