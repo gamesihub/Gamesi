@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Gamesi - Street Drive</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #0b0e18;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: auto;
+  padding: 15px;
+}
+
+h1 {
+  margin-bottom: 5px;
+}
+
+.info {
+  color: #aeb5cc;
+}
+
+canvas {
+  width: min(100%, 800px);
+  height: auto;
+  border: 3px solid #303752;
+  border-radius: 16px;
+  display: block;
+  margin: 15px auto;
+  background: #222;
+}
+
+button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  background: #7567ff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #897dff;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.controls button {
+  font-size: 24px;
+  width: 70px;
+  height: 55px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<h1>🚗 Street Drive</h1>
+
+<div class="info">
+WASD / Arrow Keys to drive · Avoid traffic · Get the highest score!
+</div>
+
+<br>
+
+<button onclick="goHome()">🏠 Home</button>
+
+<canvas id="game" width="800" height="520"></canvas>
+
+<div class="controls">
+
+<button data-key="ArrowLeft">←</button>
+
+<button data-key="ArrowUp">↑</button>
+
+<button data-key="ArrowDown">↓</button>
+
+<button data-key="ArrowRight">→</button>
+
+</div>
+
+<br>
+
+<button id="soundBtn" onclick="toggleSound()">
+🔊 Sound: On
+</button>
+
+<p id="score">
+Score: 0
+</p>
+
+</div>
+
+<script>
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+const keys = {};
+
+let score = 0;
+let gameOver = false;
+let timer;
+
+let audioCtx = null;
+let musicTimer = null;
+let soundOn = true;
+
+const player = {
+  x: 380,
+  y: 390,
+  w: 42,
+  h: 72,
+  speed: 4
+};
+
+let cars = [];
+
+let roadOffset = 0;
+
+let spawnTimer = 0;
+
+let lastTime = 0;
+
+
+/* AUDIO */
+
+function audio() {
+
+  if (!audioCtx) {
+    audioCtx = new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+  }
+
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+
+  return audioCtx;
+}
+
+
+function tone(
+  frequency,
+  duration = 0.08,
+  type = "square",
+  volume = 0.03
+) {
+
+  if (!soundOn) return;
+
+  const a = audio();
+
+  const oscillator = a.createOscillator();
+
+  const gain = a.createGain();
+
+  oscillator.type = type;
+
+  oscillator.frequency.value = frequency;
+
+  gain.gain.value = volume;
+
+  oscillator.connect(gain);
+
+  gain.connect(a.destination);
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    a.currentTime + duration
+  );
+
+  oscillator.start();
+
+  oscillator.stop(
+    a.currentTime + duration
+  );
+}
+
+
+function startMusic() {
+
+  if (!soundOn || musicTimer) return;
+
+  audio();
+
+  const notes = [
+    110,
+    138,
+    165,
+    138,
+    123,
+    147,
+    175,
+    147
+  ];
+
+  let n = 0;
+
+  musicTimer = setInterval(() => {
+
+    tone(
+      notes[n++ % notes.length],
+      0.12,
+      "triangle",
+      0.018
+    );
+
+  }, 260);
+}
+
+
+function stopMusic() {
+
+  clearInterval(musicTimer);
+
+  musicTimer = null;
+}
+
+
+function toggleSound() {
+
+  soundOn = !soundOn;
+
+  document.getElementById("soundBtn").textContent =
+    soundOn
+      ? "🔊 Sound: On"
+      : "🔇 Sound: Off";
+
+  if (soundOn) {
+    startMusic();
+  } else {
+    stopMusic();
+  }
+}
+
+
+/* HOME */
+
+function goHome() {
+
+  stopMusic();
+
+  window.location.href = "../index.html";
+}
+
+
+/* CONTROLS */
+
+addEventListener("keydown", e => {
+
+  keys[e.key] = true;
+
+  startMusic();
+
+  if (
+    gameOver &&
+    e.key === "Enter"
+  ) {
+    reset();
+  }
+
+});
+
+addEventListener("keyup", e => {
+
+  keys[e.key] = false;
+
+});
+
+
+document.querySelectorAll(".controls button")
+.forEach(button => {
+
+  button.onpointerdown = () => {
+
+    keys[button.dataset.key] = true;
+
+    startMusic();
+
+  };
+
+  button.onpointerup =
+  button.onpointerleave = () => {
+
+    keys[button.dataset.key] = false;
+
+  };
+
+});
+
+
+/* GAME */
+
+function createCar() {
+
+  cars.push({
+
+    x: 285 + Math.random() * 230,
+
+    y: -90,
+
+    w: 40,
+
+    h: 68,
+
+    speed: 2.2 + Math.random() * 1.8
+
+  });
+
+}
+
+
+function collision(a, b) {
+
+  return (
+
+    a.x < b.x + b.w &&
+    a.x + a.w > b.x &&
+    a.y < b.y + b.h &&
+    a.y + a.h > b.y
+
+  );
+
+}
+
+
+function drawCar(
+  x,
+  y,
+  w,
+  h,
+  color
+) {
+
+  ctx.fillStyle = color;
+
+  ctx.fillRect(x, y, w, h);
+
+  ctx.fillStyle = "#111827";
+
+  ctx.fillRect(
+    x + 6,
+    y + 12,
+    w - 12,
+    17
+  );
+
+  ctx.fillRect(
+    x + 6,
+    y + h - 29,
+    w - 12,
+    17
+  );
+
+  ctx.fillStyle = "#e8edf7";
+
+  ctx.fillRect(
+    x + 9,
+    y + 16,
+    w - 18,
+    10
+  );
+
+}
+
+
+function reset() {
+
+  score = 0;
+
+  gameOver = false;
+
+  cars = [];
+
+  player.x = 379;
+
+  player.y = 390;
+
+  lastTime = performance.now();
+
+  startMusic();
+
+  requestAnimationFrame(loop);
+
+}
+
+
+function update(dt) {
+
+  if (
+    keys.ArrowLeft ||
+    keys.a
+  ) {
+    player.x -= player.speed * dt;
+  }
+
+  if (
+    keys.ArrowRight ||
+    keys.d
+  ) {
+    player.x += player.speed * dt;
+  }
+
+  if (
+    keys.ArrowUp ||
+    keys.w
+  ) {
+    player.y -= player.speed * dt;
+  }
+
+  if (
+    keys.ArrowDown ||
+    keys.s
+  ) {
+    player.y += player.speed * dt;
+  }
+
+
+  player.x = Math.max(
+    258,
+    Math.min(
+      500 - player.w,
+      player.x
+    )
+  );
+
+  player.y = Math.max(
+    70,
+    Math.min(
+      520 - player.h,
+      player.y
+    )
+  );
+
+
+  roadOffset =
+    (roadOffset + 3 * dt) % 70;
+
+
+  spawnTimer += dt;
+
+
+  if (spawnTimer > 55) {
+
+    spawnTimer = 0;
+
+    createCar();
+
+  }
+
+
+  cars.forEach(car => {
+
+    car.y += car.speed * dt;
+
+  });
+
+
+  cars = cars.filter(car => {
+
+    if (car.y > 540) {
+
+      score++;
+
+      tone(
+        660,
+        0.045,
+        "square",
+        0.018
+      );
+
+      return false;
+
+    }
+
+    return true;
+
+  });
+
+
+  for (const car of cars) {
+
+    if (collision(player, car)) {
+
+      gameOver = true;
+
+      stopMusic();
+
+      tone(
+        70,
+        0.35,
+        "sawtooth",
+        0.06
+      );
+
+    }
+
+  }
+
+}
+
+
+function draw() {
+
+  ctx.clearRect(
+    0,
+    0,
+    800,
+    520
+  );
+
+
+  /* GRASS */
+
+  ctx.fillStyle = "#4b8f43";
+
+  ctx.fillRect(
+    0,
+    0,
+    800,
+    520
+  );
+
+
+  /* ROAD */
+
+  ctx.fillStyle = "#343944";
+
+  ctx.fillRect(
+    240,
+    0,
+    320,
+    520
+  );
+
+
+  ctx.fillStyle = "#242830";
+
+  ctx.fillRect(
+    250,
+    0,
+    300,
+    520
+  );
+
+
+  /* ROAD EDGES */
+
+  ctx.fillStyle = "#e8d9a6";
+
+  ctx.fillRect(
+    240,
+    0,
+    8,
+    520
+  );
+
+  ctx.fillRect(
+    552,
+    0,
+    8,
+    520
+  );
+
+
+  /* ROAD LINE */
+
+  ctx.strokeStyle = "white";
+
+  ctx.lineWidth = 5;
+
+  ctx.setLineDash([
+    35,
+    35
+  ]);
+
+  ctx.lineDashOffset =
+    -roadOffset;
+
+  ctx.beginPath();
+
+  ctx.moveTo(
+    400,
+    0
+  );
+
+  ctx.lineTo(
+    400,
+    520
+  );
+
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+
+
+  /* TRAFFIC */
+
+  for (const car of cars) {
+
+    drawCar(
+      car.x,
+      car.y,
+      car.w,
+      car.h,
+      "#e45757"
+    );
+
+  }
+
+
+  /* PLAYER */
+
+  drawCar(
+    player.x,
+    player.y,
+    player.w,
+    player.h,
+    "#7567ff"
+  );
+
+
+  if (gameOver) {
+
+    ctx.fillStyle =
+      "rgba(5,7,15,.78)";
+
+    ctx.fillRect(
+      0,
+      0,
+      800,
+      520
+    );
+
+    ctx.fillStyle = "white";
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+      "bold 48px Arial";
+
+    ctx.fillText(
+      "CRASH!",
+      400,
+      235
+    );
+
+    ctx.font =
+      "24px Arial";
+
+    ctx.fillText(
+      "Score: " + score,
+      400,
+      280
+    );
+
+    ctx.fillText(
+      "Press Enter to restart",
+      400,
+      325
+    );
+
+    ctx.textAlign = "left";
+
+  }
+
+}
+
+
+function loop(time) {
+
+  if (gameOver) {
+
+    draw();
+
+    return;
+
+  }
+
+  const dt =
+    Math.min(
+      (time - lastTime) / 16.67,
+      2
+    );
+
+  lastTime = time;
+
+  update(dt);
+
+  draw();
+
+  document.getElementById(
+    "score"
+  ).textContent =
+    "Score: " + score;
+
+  requestAnimationFrame(loop);
+
+}
+
+
+reset();
+
+</script>
+
+</body>
+</html>
